@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgilCred - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="agilcred-bg">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <!-- Cabeçalho -->
+                <div class="text-center mb-4">
+                    <h1 class="agilcred-logo">AgilCred</h1>
+                    <h2 class="agilcred-subtitle">Olá, Bem-vindo!</h2>
+                    <p class="agilcred-text-light">O que deseja fazer hoje?</p>
+                </div>
+
+                <!-- Menu -->
+                <div class="agilcred-card">
+                    <!-- Saldo -->
+                    <div class="text-center mb-4 p-3 bg-light rounded">
+                        <p class="text-muted mb-1">Seu saldo disponível</p>
+                        <h3 id="saldoAtual" class="fw-bold">R$ 5.000,00</h3>
+                    </div>
+
+                    <!-- Opções -->
+                    <div class="agilcred-menu-item" onclick="navegar('simulacao.html')">
+                        <div class="agilcred-menu-icon bg-primary">
+                            <i class="bi bi-calculator"></i>
+                        </div>
+                        <div class="agilcred-menu-content">
+                            <h5>Simular Empréstimo</h5>
+                            <p class="mb-0">Calcule suas parcelas</p>
+                        </div>
+                        <div class="agilcred-menu-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="agilcred-menu-item" onclick="navegar('saldo.html')">
+                        <div class="agilcred-menu-icon bg-success">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <div class="agilcred-menu-content">
+                            <h5>Saldo Disponível</h5>
+                            <p class="mb-0">Ver seu crédito</p>
+                        </div>
+                        <div class="agilcred-menu-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="agilcred-menu-item" onclick="navegar('acompanhamento.html')">
+                        <div class="agilcred-menu-icon bg-warning">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <div class="agilcred-menu-content">
+                            <h5>Acompanhamento</h5>
+                            <p class="mb-0">Status do seu pedido</p>
+                        </div>
+                        <div class="agilcred-menu-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="agilcred-menu-item" onclick="navegar('suporte.html')">
+                        <div class="agilcred-menu-icon bg-info">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <div class="agilcred-menu-content">
+                            <h5>Suporte</h5>
+                            <p class="mb-0">Fale com nosso chatbot</p>
+                        </div>
+                        <div class="agilcred-menu-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Botão Sair -->
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <button class="btn agilcred-btn-logout" onclick="sair()">
+                            <i class="bi bi-box-arrow-left me-2"></i>Sair da Conta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Carregar saldo
+        window.addEventListener('DOMContentLoaded', function() {
+            const saldo = localStorage.getItem('saldo') || '5000';
+            document.getElementById('saldoAtual').textContent = 
+                'R$ ' + parseFloat(saldo).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        });
+
+        function navegar(pagina) {
+            window.location.href = pagina;
+        }
+
+        function sair() {
+            if(confirm('Deseja realmente sair?')) {
+                localStorage.removeItem('logado');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

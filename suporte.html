@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgilCred - Suporte</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* RESET E ESTILOS ESSENCIAIS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body.agilcred-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        /* CORREÇÃO DOS BOTÕES */
+        .agilcred-quick-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        
+        .agilcred-quick-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+            opacity: 0.9;
+        }
+        
+        .agilcred-quick-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* ESTILOS DO CHAT */
+        .agilcred-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+        }
+        
+        .agilcred-logo {
+            color: white;
+            font-weight: 700;
+            font-size: 2.8rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+        
+        .agilcred-subtitle {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .agilcred-text-light {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1rem;
+        }
+        
+        .agilcred-chat-container {
+            height: 350px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+        
+        .agilcred-message {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        
+        .agilcred-message.user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .agilcred-message.bot {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .agilcred-message-content {
+            margin-bottom: 5px;
+        }
+        
+        .agilcred-message-time {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: right;
+        }
+        
+        .agilcred-message.bot .agilcred-message-time {
+            color: #6c757d;
+        }
+        
+        .agilcred-quick-messages {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .agilcred-chat-input {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        .agilcred-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .agilcred-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .agilcred-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .agilcred-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        .agilcred-btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .agilcred-btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .agilcred-logo {
+                font-size: 2.2rem;
+            }
+            
+            .agilcred-subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .agilcred-quick-messages {
+                flex-direction: column;
+            }
+            
+            .agilcred-quick-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="agilcred-bg">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-6">
+                <!-- Cabeçalho -->
+                <div class="text-center mb-5">
+                    <h1 class="agilcred-logo">AgilCred</h1>
+                    <h2 class="agilcred-subtitle">Suporte Inteligente</h2>
+                    <p class="agilcred-text-light">Estou aqui para ajudar você</p>
+                </div>
+
+                <!-- Chat Container -->
+                <div class="agilcred-card">
+                    <!-- Área do Chat -->
+                    <div class="agilcred-chat-container" id="chatBox">
+                        <!-- Mensagem inicial -->
+                        <div class="agilcred-message bot">
+                            <div class="agilcred-message-content">
+                                <strong>🤖 AgilBot:</strong> Olá! Sou o assistente virtual da AgilCred. Como posso ajudar você hoje? Você pode usar os botões rápidos abaixo ou digitar sua dúvida.
+                            </div>
+                            <div class="agilcred-message-time">Agora</div>
+                        </div>
+                    </div>
+
+                    <!-- Mensagens rápidas - CORRIGIDO -->
+                    <div class="agilcred-quick-messages">
+                        <button type="button" class="agilcred-quick-btn" onclick="enviarRapido('Status do pedido')">
+                            📋 Status do pedido
+                        </button>
+                        <button type="button" class="agilcred-quick-btn" onclick="enviarRapido('Saldo disponível')">
+                            💰 Saldo disponível
+                        </button>
+                        <button type="button" class="agilcred-quick-btn" onclick="enviarRapido('Simular empréstimo')">
+                            🏦 Simular empréstimo
+                        </button>
+                        <button type="button" class="agilcred-quick-btn" onclick="enviarRapido('Falar com humano')">
+                            👨‍💼 Falar com atendente
+                        </button>
+                    </div>
+
+                    <!-- Input de mensagem -->
+                    <div class="agilcred-chat-input">
+                        <input type="text" class="agilcred-input" id="mensagemInput" 
+                               placeholder="Digite sua mensagem..." autocomplete="off">
+                        <button type="button" class="btn agilcred-btn-primary" onclick="enviarMensagem()">
+                            <i class="bi bi-send"></i> Enviar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botão Voltar -->
+                <button type="button" class="btn agilcred-btn-secondary w-100 mt-4" onclick="navegarParaDashboard()">
+                    <i class="bi bi-arrow-left me-2"></i>Voltar ao Menu Principal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar localStorage se necessário
+        if (!localStorage.getItem('saldo')) {
+            localStorage.setItem('saldo', '7500.00');
+        }
+        
+        if (!localStorage.getItem('pedidoStatus')) {
+            localStorage.setItem('pedidoStatus', 'Em análise');
+        }
+
+        const respostas = {
+            'status': `Seu pedido está: <strong>${localStorage.getItem('pedidoStatus')}</strong>. Previsão de retorno: 2-3 dias úteis.`,
+            'saldo': `Seu saldo disponível é: <strong>R$ ${parseFloat(localStorage.getItem('saldo')).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>`,
+            'simular': 'Para simular um empréstimo, informe o valor desejado e o número de parcelas. Ou vá em "Simulação" no menu principal para opções detalhadas.',
+            'humano': 'Conectando você com um de nossos atendentes... Por favor, aguarde alguns instantes. ⏳'
+        };
+
+        function adicionarMensagem(texto, tipo) {
+            const chat = document.getElementById('chatBox');
+            const hora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const msg = document.createElement('div');
+            msg.className = `agilcred-message ${tipo}`;
+            
+            // Sanitizar entrada para prevenir XSS
+            const textoSanitizado = texto.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            
+            msg.innerHTML = `
+                <div class="agilcred-message-content">
+                    <strong>${tipo === 'user' ? '👤 Você' : '🤖 AgilBot'}:</strong> ${tipo === 'bot' && texto.includes('<strong>') ? texto : textoSanitizado}
+                </div>
+                <div class="agilcred-message-time">${hora}</div>
+            `;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function responder(mensagem) {
+            let resposta = 'Desculpe, não entendi completamente. Pode reformular ou usar uma das opções abaixo?';
+            const msgLower = mensagem.toLowerCase();
+            
+            if (msgLower.includes('status') || msgLower.includes('pedido') || msgLower.includes('análise')) {
+                resposta = respostas.status;
+            } else if (msgLower.includes('saldo') || msgLower.includes('disponível') || msgLower.includes('dinheiro')) {
+                resposta = respostas.saldo;
+            } else if (msgLower.includes('simular') || msgLower.includes('empréstimo') || msgLower.includes('crédito')) {
+                resposta = respostas.simular;
+            } else if (msgLower.includes('humano') || msgLower.includes('atendente') || msgLower.includes('pessoa')) {
+                resposta = respostas.humano;
+                // Simular transferência para atendente humano
+                setTimeout(() => {
+                    adicionarMensagem('🔗 Você foi transferido para nosso atendimento humano. Aguarde...', 'bot');
+                }, 3000);
+            } else if (msgLower.includes('olá') || msgLower.includes('oi') || msgLower.includes('bom dia') || msgLower.includes('boa tarde')) {
+                resposta = 'Olá! 😊 Como posso ajudar você hoje?';
+            } else if (msgLower.includes('obrigado') || msgLower.includes('obrigada') || msgLower.includes('valeu')) {
+                resposta = 'Por nada! Fico feliz em ajudar. Se tiver mais alguma dúvida, é só perguntar! 👍';
+            } else if (msgLower.includes('ajuda') || msgLower.includes('help')) {
+                resposta = 'Posso ajudar com: status de pedidos, saldo disponível, simulação de empréstimos ou conectar você com um atendente humano.';
+            }
+            
+            setTimeout(() => {
+                adicionarMensagem(resposta, 'bot');
+            }, 800);
+        }
+
+        function enviarMensagem() {
+            const input = document.getElementById('mensagemInput');
+            const texto = input.value.trim();
+            
+            if (texto) {
+                adicionarMensagem(texto, 'user');
+                input.value = '';
+                input.focus();
+                responder(texto);
+            }
+        }
+
+        function enviarRapido(texto) {
+            adicionarMensagem(texto, 'user');
+            responder(texto);
+        }
+
+        function navegarParaDashboard() {
+            // Tenta ir para dashboard, se não existir vai para index
+            window.location.href = 'dashboard.html';
+        }
+
+        // Event Listeners
+        document.getElementById('mensagemInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                enviarMensagem();
+            }
+        });
+
+        // Foco automático no input ao carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('mensagemInput').focus();
+        });
+
+        // Melhorar experiência do chat
+        document.querySelectorAll('.agilcred-quick-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

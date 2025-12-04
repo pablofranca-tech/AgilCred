@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgilCred - Simular Empréstimo</title>
+    <style>
+        /* RESET COMPLETO */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #333; /* FORÇAR COR PRETA PARA TUDO */
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* FORÇAR TODOS OS TEXTOS A SEREM PRETOS */
+        body, div, span, p, label, input, button, h1, h2, h3, h4, h5, h6 {
+            color: #333 !important;
+            text-decoration-color: #333 !important;
+        }
+        
+        /* ESPECIFICAMENTE PARA INPUTS */
+        input, input:focus, input:hover, input:active {
+            color: #333 !important;
+            caret-color: #333 !important;
+            text-decoration-color: #333 !important;
+            outline-color: #333 !important;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            color: white !important;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            color: white !important;
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .label {
+            display: block;
+            color: #333 !important;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .valor-display {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #e0e6f5;
+        }
+        
+        .valor-display span {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea !important;
+        }
+        
+        /* SOLUÇÃO RADICAL: INPUT CUSTOMIZADO SEM USAR TYPE="RANGE" */
+        .range-container {
+            position: relative;
+            margin-top: 30px;
+            padding: 0 10px;
+        }
+        
+        /* Container da barra */
+        .range-track {
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 3px;
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        /* Botão deslizante customizado */
+        .range-thumb {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        /* Barra preenchida */
+        .range-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #667eea;
+            border-radius: 3px;
+        }
+        
+        /* Marcas na barra */
+        .range-marks {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: transparent;
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .range-labels span {
+            color: #666 !important;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Input escondido que armazena o valor real */
+        .hidden-range {
+            display: none;
+        }
+        
+        .range-tooltip {
+            position: absolute;
+            top: -40px;
+            background: #667eea;
+            color: white !important;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        .range-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #667eea transparent transparent transparent;
+        }
+        
+        .prazo-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .prazo-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: #333 !important;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .prazo-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .prazo-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            border-color: #667eea;
+        }
+        
+        .simulation-info {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 2px solid #e0e6f5;
+        }
+        
+        .info-title {
+            color: #667eea !important;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eaeef7;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-item span {
+            color: #666 !important;
+        }
+        
+        .info-item strong {
+            color: #667eea !important;
+            font-size: 1.1rem;
+        }
+        
+        .saldo-info {
+            background: #e8f5e9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #c8e6c9;
+        }
+        
+        .saldo-info .info-title {
+            color: #2e7d32 !important;
+        }
+        
+        .saldo-info .info-item strong {
+            color: #2e7d32 !important;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            margin-top: 25px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white !important;
+            margin-top: 15px;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .valor-display span {
+                font-size: 2rem;
+            }
+            
+            .prazo-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">AgilCred</h1>
+            <h2 class="subtitle">Simular Empréstimo</h2>
+        </div>
+
+        <div class="card">
+            <!-- Valor -->
+            <div class="section">
+                <label class="label">Valor Desejado</label>
+                <div class="valor-display">
+                    R$ <span id="valorDisplay">5.000,00</span>
+                </div>
+                
+                <!-- Range Customizado -->
+                <div class="range-container">
+                    <!-- Input real escondido -->
+                    <input type="range" class="hidden-range" id="rangeValor" 
+                           min="1000" max="50000" step="1000" value="5000">
+                    
+                    <!-- Interface customizada -->
+                    <div class="range-track" id="rangeTrack">
+                        <div class="range-fill" id="rangeFill"></div>
+                        <div class="range-thumb" id="rangeThumb"></div>
+                        <div class="range-tooltip" id="rangeTooltip">R$ 5.000</div>
+                    </div>
+                    
+                    <div class="range-labels">
+                        <span>R$ 1.000</span>
+                        <span>R$ 50.000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prazo -->
+            <div class="section">
+                <label class="label">Prazo de Pagamento</label>
+                <div class="prazo-buttons">
+                    <button type="button" class="prazo-btn" data-meses="12">12 Meses</button>
+                    <button type="button" class="prazo-btn active" data-meses="24">24 Meses</button>
+                    <button type="button" class="prazo-btn" data-meses="36">36 Meses</button>
+                </div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="simulation-info">
+                <h5 class="info-title">Detalhes da Simulação</h5>
+                <div class="info-item">
+                    <span>Parcela Mensal:</span>
+                    <strong id="parcela">R$ 250,00</strong>
+                </div>
+                <div class="info-item">
+                    <span>Total a Pagar:</span>
+                    <strong id="total">R$ 6.000,00</strong>
+                </div>
+                <div class="info-item">
+                    <span>Taxa de Juros:</span>
+                    <strong>1.49% a.m.</strong>
+                </div>
+                <div class="info-item">
+                    <span>CET (Custo Efetivo Total):</span>
+                    <strong>19.56% a.a.</strong>
+                </div>
+            </div>
+
+            <!-- Saldo -->
+            <div class="saldo-info">
+                <h5 class="info-title">Sua Situação</h5>
+                <div class="info-item">
+                    <span>Saldo Disponível:</span>
+                    <strong id="saldo">R$ 5.000,00</strong>
+                </div>
+                <div class="info-item">
+                    <span>Saldo Após Empréstimo:</span>
+                    <strong id="novoSaldo">R$ 0,00</strong>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <button type="button" class="btn btn-primary" id="btnSolicitar">
+                <span>✓</span>Solicitar Agora
+            </button>
+
+            <button type="button" class="btn btn-secondary" onclick="navegarParaDashboard()">
+                <span>←</span>Voltar ao Menu
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configurações
+        let prazo = 24;
+        let taxa = 1.49;
+        let saldoAtual = parseFloat(localStorage.getItem('saldo') || 5000);
+        let isDragging = false;
+
+        // Elementos DOM
+        const hiddenRange = document.getElementById('rangeValor');
+        const valorDisplay = document.getElementById('valorDisplay');
+        const parcelaEl = document.getElementById('parcela');
+        const totalEl = document.getElementById('total');
+        const saldoEl = document.getElementById('saldo');
+        const novoSaldoEl = document.getElementById('novoSaldo');
+        const botoesPrazo = document.querySelectorAll('.prazo-btn');
+        const btnSolicitar = document.getElementById('btnSolicitar');
+        const rangeTooltip = document.getElementById('rangeTooltip');
+        const rangeThumb = document.getElementById('rangeThumb');
+        const rangeFill = document.getElementById('rangeFill');
+        const rangeTrack = document.getElementById('rangeTrack');
+
+        // Formatar dinheiro
+        function formatarDinheiro(valor) {
+            return valor.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2
+            });
+        }
+
+        // Formatar número sem símbolo de moeda
+        function formatarNumero(valor) {
+            return valor.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Calcular parcela
+        function calcularParcela(valor, prazoMeses, taxaMensal) {
+            const taxaDecimal = taxaMensal / 100;
+            const numerador = taxaDecimal * Math.pow(1 + taxaDecimal, prazoMeses);
+            const denominador = Math.pow(1 + taxaDecimal, prazoMeses) - 1;
+            const parcela = valor * (numerador / denominador);
+            return parcela;
+        }
+
+        // Atualizar posição do thumb e fill
+        function atualizarPosicaoRange(valor) {
+            const min = parseInt(hiddenRange.min);
+            const max = parseInt(hiddenRange.max);
+            const percent = (valor - min) / (max - min) * 100;
+            
+            // Posicionar thumb
+            rangeThumb.style.left = `${percent}%`;
+            
+            // Atualizar barra preenchida
+            rangeFill.style.width = `${percent}%`;
+            
+            // Atualizar tooltip
+            rangeTooltip.textContent = `R$ ${formatarNumero(valor)}`;
+            rangeTooltip.style.left = `${percent}%`;
+        }
+
+        // Atualizar valor do range
+        function setRangeValue(valor) {
+            hiddenRange.value = valor;
+            valorDisplay.textContent = formatarNumero(valor);
+            atualizarPosicaoRange(valor);
+            calcular(valor);
+        }
+
+        // Calcular todos os valores
+        function calcular(valor) {
+            const parcela = calcularParcela(valor, prazo, taxa);
+            const total = parcela * prazo;
+            const novoSaldo = saldoAtual + valor;
+            
+            parcelaEl.textContent = formatarDinheiro(parcela);
+            totalEl.textContent = formatarDinheiro(total);
+            saldoEl.textContent = formatarDinheiro(saldoAtual);
+            novoSaldoEl.textContent = formatarDinheiro(novoSaldo);
+            
+            const podeSolicitar = saldoAtual >= valor;
+            btnSolicitar.disabled = !podeSolicitar;
+            btnSolicitar.innerHTML = podeSolicitar ? 
+                '<span>✓</span>Solicitar Agora' : 
+                '<span>⚠</span>Saldo Insuficiente';
+        }
+
+        // Obter posição do click na barra
+        function getValueFromPosition(clientX) {
+            const rect = rangeTrack.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const percent = Math.min(Math.max(x / rect.width, 0), 1);
+            
+            const min = parseInt(hiddenRange.min);
+            const max = parseInt(hiddenRange.max);
+            const step = parseInt(hiddenRange.step);
+            
+            // Calcular valor baseado na posição
+            let valor = min + percent * (max - min);
+            
+            // Arredondar para o step mais próximo
+            valor = Math.round(valor / step) * step;
+            
+            // Garantir que esteja dentro dos limites
+            valor = Math.min(Math.max(valor, min), max);
+            
+            return valor;
+        }
+
+        // Event Listeners para o range customizado
+        rangeTrack.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            const valor = getValueFromPosition(e.clientX);
+            setRangeValue(valor);
+            rangeTooltip.style.opacity = '1';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            const valor = getValueFromPosition(e.clientX);
+            setRangeValue(valor);
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        // Toque para mobile
+        rangeTrack.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            const touch = e.touches[0];
+            const valor = getValueFromPosition(touch.clientX);
+            setRangeValue(valor);
+            rangeTooltip.style.opacity = '1';
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            const touch = e.touches[0];
+            const valor = getValueFromPosition(touch.clientX);
+            setRangeValue(valor);
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchend', function() {
+            isDragging = false;
+        });
+
+        // Clique direto na barra
+        rangeTrack.addEventListener('click', function(e) {
+            const valor = getValueFromPosition(e.clientX);
+            setRangeValue(valor);
+        });
+
+        // Mostrar/ocultar tooltip
+        rangeTrack.addEventListener('mouseenter', function() {
+            rangeTooltip.style.opacity = '1';
+        });
+
+        rangeTrack.addEventListener('mouseleave', function() {
+            if (!isDragging) {
+                rangeTooltip.style.opacity = '0';
+            }
+        });
+
+        // Botões de prazo
+        botoesPrazo.forEach(btn => {
+            btn.addEventListener('click', function() {
+                botoesPrazo.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                prazo = parseInt(this.dataset.meses);
+                calcular(parseInt(hiddenRange.value));
+            });
+        });
+
+        // Botão solicitar
+        btnSolicitar.addEventListener('click', function() {
+            const valor = parseInt(hiddenRange.value);
+            
+            if (valor > saldoAtual) {
+                alert('Saldo insuficiente!');
+                return;
+            }
+            
+            const confirmacao = confirm(`Solicitar empréstimo de ${formatarDinheiro(valor)} em ${prazo} parcelas?`);
+            
+            if (!confirmacao) return;
+            
+            const solicitacao = {
+                valor: valor,
+                prazo: prazo,
+                data: new Date().toISOString(),
+                dataFormatada: new Date().toLocaleDateString('pt-BR'),
+                status: 'Em análise'
+            };
+            
+            localStorage.setItem('ultimaSolicitacao', JSON.stringify(solicitacao));
+            
+            let historico = JSON.parse(localStorage.getItem('historicoSolicitacoes') || '[]');
+            historico.push(solicitacao);
+            localStorage.setItem('historicoSolicitacoes', JSON.stringify(historico));
+            
+            alert('✅ Empréstimo solicitado com sucesso!');
+            navegarParaDashboard();
+        });
+
+        function navegarParaDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            saldoAtual = parseFloat(localStorage.getItem('saldo') || 5000);
+            const valorInicial = parseInt(hiddenRange.value);
+            setRangeValue(valorInicial);
+        });
+    </script>
+</body>
+</html>
